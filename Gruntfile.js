@@ -22,7 +22,8 @@ module.exports = function(grunt) {
         options: {
           vendor: ['vendor/jquery/jquery-1.9.0.js', 'vendor/underscore/lodash.js', 'vendor/backbone/backbone.js'],
           specs: 'tests/*.spec.js',
-          keepRunner: true
+          keepRunner: true,
+          helpers: 'vendor/jasmine-jquery/jasmine-jquery.js'
         }
       }
     }
