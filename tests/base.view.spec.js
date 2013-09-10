@@ -14,17 +14,24 @@ describe('BaseView', function() {
     });
   });
 
-  it('should be able to create itself', function() {
-    expect(view1).not.toBeNull();
+  describe('Instantiation', function() {
+
+    it('should be able to create itself', function() {
+      expect(view1).not.toBeNull();
+    });
+
+    it('view DOM element has been created', function() {
+      expect(view1.el).not.toBeNull();
+      expect(view1.$el).not.toBeNull();
+    });
+
   });
 
-  it('view DOM element has been created', function() {
-    expect(view1.el).not.toBeNull();
-    expect(view1.$el).not.toBeNull();
+  describe('Rendering', function() {
+    it('renders itself', function() {
+      view1.render();
+      expect(view1.$el).toExist();
+    });
   });
 
-  it('renders itself and creates DOM elements', function() {
-    view1.render();
-    expect(view1.$el).toExist();
-  });
 });
