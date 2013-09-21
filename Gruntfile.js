@@ -36,7 +36,7 @@ module.exports = function(grunt) {
           compress: false
         },
         files: {
-          'dist/tree.min.js': ['src/*.js']
+          'dist/tree.js': ['src/*.js']
         }
       }
     }
