@@ -1,4 +1,5 @@
 describe('BaseView', function() {
+  'use strict';
 
   var view1;
 
