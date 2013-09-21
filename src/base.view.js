@@ -44,12 +44,8 @@ var BaseView = (function (_, Backbone) {
         data = this.model.toJSON();
       }
 
-      if (this.template in TemplateRegistry) {
-        templateFunction = TemplateRegistry[this.template];
-        this.$el.html(templateFunction(data));
-      } else {
-        this.$el.html(this.template);
-      }
+      var template = _.template(this.template, data);
+      this.$el.html(template);
     },
 
     /**
