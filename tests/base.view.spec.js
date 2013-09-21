@@ -26,6 +26,6 @@ describe('BaseView', function() {
 
   it('renders itself and creates DOM elements', function() {
     view1.render();
-    expect(view1.$el).toExist();
+    expect(view1.$el).toBeDefined();
   });
 });
