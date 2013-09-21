@@ -7,7 +7,11 @@ var BaseView = (function (_, Backbone) {
 
     subscriptions: [],
 
+    /**
+     * Sets the configuration object and binds render sub-methods.
+     */
     initialize: function() {
+
       if (!this.template &&
         (!this.options.template || !_.isString(this.options.template))) {
         throw new Error('All views must specify their template at creation');
@@ -15,90 +19,91 @@ var BaseView = (function (_, Backbone) {
         this.template = this.template ? this.template : this.options.template;
       }
 
+      var that = this;
+
       this.channel = this.options.channel;
-      this.subscriptions = [];
 
       _.bindAll(this, 'beforeRender', 'render', 'afterRender');
-      var _this = this;
+
       this.render = _.wrap(this.render, function(render) {
-        _this.beforeRender();
+        that.beforeRender();
         render();
-        _this.afterRender();
-        return _this;
+        that.afterRender();
+        return that;
       });
     },
 
-    compileTemplate: function() {
-
-    },
-
-    getTemplate: function() {
-
-    },
-
+    /**
+     * Renders the current view in the specified template.
+     */
     render: function() {
-      var data = this.options.data || {};
-      var templateFunction;
+      var data = this.options.data,
+          templateFunction;
 
       if (this.model) {
         data = this.model.toJSON();
       }
 
-      if (this.template in JST) {
-        templateFunction = JST[this.template];
+      if (this.template in TemplateRegistry) {
+        templateFunction = TemplateRegistry[this.template];
         this.$el.html(templateFunction(data));
       } else {
         this.$el.html(this.template);
       }
     },
 
-    // load: function(config) {
-    //   if (this.model) {
-    //     this.loadRender();
-    //     this.model.fetch();
-    //   } else {
-    //     this.render();
-    //   }
-    // },
-
-    // loadRender: function() {
-    //   this.$el.html('<p>Loading widget..</p>');
-    // },
-
+    /**
+     * Default action of the view.
+     */
     defaultAction: function() {
       this.render();
     },
 
-    beforeRender: function() {
-    },
-
-    afterRender: function() {
-    },
-
+    /**
+     * Subscribe the view to a topic of a channel.
+     * @param  {[type]}   topic
+     * @param  {Function} callback
+     * @return {[type]}
+     */
     subscribe: function(topic, callback) {
       var subscription = this.channel.subscribe(topic, callback);
       this.subscriptions.push(subscription);
     },
 
+    /**
+     * Publishes data in a postal channel.
+     * @param  {[type]} topic
+     * @param  {[type]} data
+     */
     publish: function(topic, data) {
       this.channel.publish(topic, data);
     },
 
+    /**
+     * Removes all the Postal subscriptions of the view.
+     */
     unsubscribeAll: function() {
       _.each(this.subscriptions, function(subscription) {
         subscription.unsubscribe();
       });
     },
 
+    /**
+     * Disposes the view.
+     */
     dispose: function() {
-      this.$el.empty(); //remove from DOM
+      this.$el.empty();
 
       if (this.model) {
         this.model.off();
       }
 
       this.unsubscribeAll();
-    }
+    },
+
+    beforeRender: function() {},
+
+    afterRender: function() {}
   });
 
 }(_, Backbone));
