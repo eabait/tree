@@ -1,3 +1,47 @@
+IDE's files -----------------------------------------
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# sublimetext
+/*.sublime-project
+*.sublime-workspace
+
+# -- Project ---------------------------------
+_SpecRunner.html
+
+# -- NodeJS files ----------------------------
+/build/
+/node_modules/
+/build/node_modules/
+/example/node_modules/
+npm-debug.log
+
+# -- OS's files ------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.*
+!.gitignore
+!.travis.yml
+*~
+
+# Mac OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# others
 lib-cov
 *.seed
 *.log
@@ -6,13 +50,6 @@ lib-cov
 *.out
 *.pid
 *.gz
-
 pids
 logs
 results
-
-npm-debug.log
-
-node_modules
-
-_SpecRunner.html
