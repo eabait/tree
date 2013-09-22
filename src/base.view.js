@@ -44,8 +44,24 @@ var BaseView = (function (_, Backbone) {
         data = this.model.toJSON();
       }
 
-      var template = _.template(this.template, data);
-      this.$el.html(template);
+      this.compileTemplate();
+      this.$el.html(this.getTemplate(data));
+    },
+
+    /**
+     * This should be redefined by the extended class. It should compile the raw template into
+     * a javascript function.
+     */
+    compileTemplate: function() {
+    },
+
+    /**
+     * This should be redefined by the extended class. It should take the compiled template and
+     * attach the parameters, if any, and return the output.
+     * @param  {[object]} data The data that we want to send to the template.
+     */
+    getTemplate: function(data) {
+      return _.template(this.template, data);
     },
 
     /**
