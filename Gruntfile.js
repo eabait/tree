@@ -1,22 +1,27 @@
 module.exports = function(grunt) {
   'use strict';
 
+  var Paths = {
+    LIB: 'src/**/*.js',
+    SPECS: 'tests/*.spec.js'
+  };
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
     // js linting options
     jshint: {
-      all: ['Gruntfile.js', 'src/*.js'],
+      all: ['Gruntfile.js', Paths.LIB],
       jshintrc: '.jshintrc'
     },
 
     // Builds and run spec runner
     jasmine: {
       pivotal: {
-        src: 'src/**/*.js',
+        src: Paths.LIB,
         options: {
           vendor: ['vendor/jquery/jquery-1.9.0.js', 'vendor/underscore/lodash.js', 'vendor/backbone/backbone.js'],
-          specs: 'tests/*.spec.js',
+          specs: Paths.SPECS,
           keepRunner: true,
           helpers: 'vendor/jasmine-jquery/jasmine-jquery.js'
         }
@@ -27,7 +32,7 @@ module.exports = function(grunt) {
     uglify: {
       min: {
         files: {
-          'dist/tree.min.js': ['src/*.js']
+          'dist/tree.min.js': [Paths.LIB]
         }
       },
       concat: {
@@ -36,7 +41,7 @@ module.exports = function(grunt) {
           compress: false
         },
         files: {
-          'dist/tree.js': ['src/*.js']
+          'dist/tree.js': [Paths.LIB]
         }
       }
     }
