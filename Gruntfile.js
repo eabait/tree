@@ -20,7 +20,12 @@ module.exports = function(grunt) {
       pivotal: {
         src: Path.LIB,
         options: {
-          vendor: ['vendor/jquery/jquery-1.9.0.js', 'vendor/underscore/lodash.js', 'vendor/backbone/backbone.js'],
+          vendor: [
+            'vendor/jquery/jquery-1.9.0.js',
+            'vendor/underscore/lodash.js',
+            'vendor/backbone/backbone.js',
+            'vendor/postal/postal.js'
+          ],
           specs: Path.SPECS,
           keepRunner: true,
           helpers: 'vendor/jasmine-jquery/jasmine-jquery.js'
