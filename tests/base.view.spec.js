@@ -2,7 +2,7 @@ describe('BaseView', function() {
   'use strict';
 
 
-  describe('Creating a base.view', function() {
+  describe('base.view test suite', function() {
     var view1;
 
     beforeEach(function() {
@@ -30,34 +30,48 @@ describe('BaseView', function() {
       view1.render();
       expect(view1.$el).toBeDefined();
     });
-  });
 
-  describe('Subscription', function() {
-    var view1;
+    it('can subscribe to a channel', function() {
+      var message;
+      view1.channel = postal.channel('test');
 
-    beforeEach(function() {
-      var TestModel = Backbone.Model.extend({
-        testAttr1: "attr1"
+      view1.subscribe('sayHello', function(data) {
+        message = data;
       });
 
-      view1 = new BaseView({
-        tagName: 'ul',
-        template: '<p>example</p>',
-        channel: 'view.test',
-        model: new TestModel()
+      postal.publish({
+        channel: 'test',
+        topic: 'sayHello',
+        data: 'Hello'
       });
 
-      it('can subscribe to a channel', function() {
-        expect(1).toBeThruthy();
+      waitsFor(function() { return message; });
+
+      runs(function() {
+        expect(message).toBe('Hello');
+      });
+    });
+
+    it('can publish messages to a channel', function() {
+      var message;
+      view1.channel = postal.channel('test');
+
+      var sub = postal.subscribe({
+        channel: 'test',
+        topic: 'sayHello',
+        callback: function(data) {
+          message = data;
+        }
       });
 
-      it('can publish messages to a channel', function() {
-        expect(1).toBeThruthy();
-      });
+      view1.publish('sayHello', 'Hello');
 
-      it('can unsubscribe from channels', function() {
-        expect(1).toBeThruthy();
+      waitsFor(function() { return message; });
+
+      runs(function() {
+        expect(message).toBe('Hello');
       });
     });
   });
+
 });
