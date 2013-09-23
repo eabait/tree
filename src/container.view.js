@@ -10,6 +10,13 @@ var ContainerView = (function (BaseView) {
       this.regions = {};
     },
 
+    /**
+     * Associates a view to a region. Saves this mapping
+     * into this.regions
+     * @param {string}   region is a selector for a DOM element
+     *                          where the view will be rendered
+     * @param {BaseView} view   view to be rendered into the region
+     */
     addView: function(region, view) {
       if (this.regions[region]) {
         this.regions[region].dispose();
@@ -19,6 +26,11 @@ var ContainerView = (function (BaseView) {
       view.el = region;
     },
 
+    /**
+     * Renders a view into a region
+     * @param  {string} region selector for a DOM element where this view will be rendered
+     * @throws {error}  If the region has no view associated
+     */
     showView: function(region) {
       var view = this.regions[region];
 
@@ -30,7 +42,11 @@ var ContainerView = (function (BaseView) {
       }
     },
 
-
+    /**
+     * Composite render.
+     * 1) Renders a template to create the DOM elements that will serve as regions
+     * 2) Renders subviews into their own region as defined in this.regions
+     */
     render: function() {
       BaseView.prototype.render.apply(this, arguments);
 
@@ -39,6 +55,9 @@ var ContainerView = (function (BaseView) {
       }
     },
 
+    /**
+     * Disposes all the views from the container
+     */
     disposeViews: function() {
       for (var view in this.regions) {
         this.regions[view].dispose();
@@ -49,6 +68,9 @@ var ContainerView = (function (BaseView) {
       delete this.regions;
     },
 
+    /**
+     * Disposes this view, and all the associated subviews
+     */
     dispose: function() {
       BaseView.prototype.dispose.apply(this, arguments);
       this.disposeViews();
