@@ -2,8 +2,13 @@ describe('BaseView', function() {
   'use strict';
 
 
-  describe('Creating a base.view', function() {
+  describe('base.view test suite', function() {
     var view1;
+
+    /*! Tiny Pub/Sub - v0.7.0 - 2013-01-29
+     * https://github.com/cowboy/jquery-tiny-pubsub
+     * Copyright (c) 2013 "Cowboy" Ben Alman; Licensed MIT */
+    (function(n){var u=n({});n.subscribe=function(){u.on.apply(u,arguments)},n.unsubscribe=function(){u.off.apply(u,arguments)},n.publish=function(){u.trigger.apply(u,arguments)}})(jQuery);
 
     beforeEach(function() {
       var TestModel = Backbone.Model.extend({
@@ -13,7 +18,21 @@ describe('BaseView', function() {
       view1 = new BaseView({
         tagName: 'ul',
         template: '<p>example</p>',
-        model: new TestModel()
+        model: new TestModel(),
+        pubsub: {
+          subscribe: function(topic, callback) {
+            this.subscriptions.push(topic);
+            $.subscribe(topic, callback);
+          },
+          publish: function(topic, data) {
+            $.publish(topic, data);
+          },
+          unsubscribeAll: function() {
+            _.each(this.subscriptions, function(topic) {
+              $.unsubscribe(topic);
+            });
+          }
+        }
       });
     });
 
@@ -30,34 +49,38 @@ describe('BaseView', function() {
       view1.render();
       expect(view1.$el).toBeDefined();
     });
-  });
 
-  describe('Subscription', function() {
-    var view1;
+    it('can subscribe to a channel', function() {
+      var message;
 
-    beforeEach(function() {
-      var TestModel = Backbone.Model.extend({
-        testAttr1: "attr1"
+      view1.subscribe('sayHello', function(_, data) {
+        message = data;
       });
 
-      view1 = new BaseView({
-        tagName: 'ul',
-        template: '<p>example</p>',
-        channel: 'view.test',
-        model: new TestModel()
+      view1.publish('sayHello', 'Hello');
+
+      waitsFor(function() { return message; });
+
+      runs(function() {
+        expect(message).toBe('Hello');
+      });
+    });
+
+    it('can publish messages to a channel', function() {
+      var message;
+
+      $.subscribe('sayHello', function(_, data) {
+        message = data;
       });
 
-      it('can subscribe to a channel', function() {
-        expect(1).toBeThruthy();
-      });
+      view1.publish('sayHello', 'Hello');
 
-      it('can publish messages to a channel', function() {
-        expect(1).toBeThruthy();
-      });
+      waitsFor(function() { return message; });
 
-      it('can unsubscribe from channels', function() {
-        expect(1).toBeThruthy();
+      runs(function() {
+        expect(message).toBe('Hello');
       });
     });
   });
+
 });
