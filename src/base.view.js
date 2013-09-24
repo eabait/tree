@@ -73,31 +73,20 @@ var BaseView = (function (_, Backbone) {
 
     /**
      * Subscribe the view to a topic of a channel.
-     * @param  {[type]}   topic
-     * @param  {Function} callback
-     * @return {[type]}
      */
-    subscribe: function(topic, callback) {
-      var subscription = this.channel.subscribe(topic, callback);
-      this.subscriptions.push(subscription);
+    subscribe: function() {
     },
 
     /**
      * Publishes data in a postal channel.
-     * @param  {[type]} topic
-     * @param  {[type]} data
      */
-    publish: function(topic, data) {
-      this.channel.publish(topic, data);
+    publish: function() {
     },
 
     /**
      * Removes all the Postal subscriptions of the view.
      */
     unsubscribeAll: function() {
-      _.each(this.subscriptions, function(subscription) {
-        subscription.unsubscribe();
-      });
     },
 
     /**

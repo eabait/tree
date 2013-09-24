@@ -23,8 +23,7 @@ module.exports = function(grunt) {
           vendor: [
             'vendor/jquery/jquery-1.9.0.js',
             'vendor/underscore/lodash.js',
-            'vendor/backbone/backbone.js',
-            'vendor/postal/postal.js'
+            'vendor/backbone/backbone.js'
           ],
           specs: Path.SPECS,
           keepRunner: true,
