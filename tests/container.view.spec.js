@@ -12,6 +12,18 @@ describe('ContainerView', function() {
     $('body').find('.testing').remove();
   });
 
+  var pubsub = {
+    subscribe: function(topic, callback) {
+      console.log('subscribed');
+    },
+    publish: function(topic, data) {
+      console.log('publish');
+    },
+    unsubscribeAll: function() {
+      console.log('unsubscribed from all');
+    }
+  };
+
   describe('container.view test suite', function() {
     var containerView,
       TestModel;
@@ -24,7 +36,8 @@ describe('ContainerView', function() {
 
       containerView = new ContainerView({
         el: '.testing',
-        template: '<div class="container"></div>'
+        template: '<div class="container"></div>',
+        pubsub: pubsub
       });
     });
 
@@ -35,7 +48,8 @@ describe('ContainerView', function() {
     it('can add views', function() {
       containerView.addView('.container', new BaseView({
         template: '<p>view1</p>',
-        model: new TestModel()
+        model: new TestModel(),
+        pubsub: pubsub
       }));
 
       expect(Object.keys(containerView.regions).length).toBe(1);
@@ -44,7 +58,8 @@ describe('ContainerView', function() {
     it('can render sub-views', function() {
       containerView.addView('.container', new BaseView({
         template: '<p>view1</p>',
-        model: new TestModel()
+        model: new TestModel(),
+        pubsub: pubsub
       }));
 
       containerView.render();
@@ -58,7 +73,8 @@ describe('ContainerView', function() {
     it('can dispose sub-views', function() {
       containerView.addView('.container', new BaseView({
         template: '<p>view1</p>',
-        model: new TestModel()
+        model: new TestModel(),
+        pubsub: pubsub
       }));
 
       containerView.dispose();

@@ -19,6 +19,14 @@ var BaseView = (function (_, Backbone) {
         this.template = this.template ? this.template : this.options.template;
       }
 
+      if ((!this.options.pubsub) || (_.difference(_.keys(this.options.pubsub), ['subscribe', 'publish', 'unsubscribeAll']).length !== 0)) {
+        throw new Error('All views must specify their own pubsub methods (subscribe, publish, unsubscribeAll).');
+      } else {
+        this.subscribe = this.options.pubsub.subscribe;
+        this.publish = this.options.pubsub.publish;
+        this.unsubscribeAll = this.options.pubsub.unsubscribeAll;
+      }
+
       var that = this;
 
       this.channel = this.options.channel;
