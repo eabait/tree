@@ -3,8 +3,6 @@ var BaseView = (function (_, Backbone) {
 
   return Backbone.View.extend({
 
-    channel: null,
-
     subscriptions: [],
 
     /**

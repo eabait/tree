@@ -5,6 +5,11 @@ describe('BaseView', function() {
   describe('base.view test suite', function() {
     var view1;
 
+    /*! Tiny Pub/Sub - v0.7.0 - 2013-01-29
+     * https://github.com/cowboy/jquery-tiny-pubsub
+     * Copyright (c) 2013 "Cowboy" Ben Alman; Licensed MIT */
+    (function(n){var u=n({});n.subscribe=function(){u.on.apply(u,arguments)},n.unsubscribe=function(){u.off.apply(u,arguments)},n.publish=function(){u.trigger.apply(u,arguments)}})(jQuery);
+
     beforeEach(function() {
       var TestModel = Backbone.Model.extend({
         testAttr1: "attr1"
@@ -16,13 +21,16 @@ describe('BaseView', function() {
         model: new TestModel(),
         pubsub: {
           subscribe: function(topic, callback) {
-            console.log('subscribed');
+            this.subscriptions.push(topic);
+            $.subscribe(topic, callback);
           },
           publish: function(topic, data) {
-            console.log('publish');
+            $.publish(topic, data);
           },
           unsubscribeAll: function() {
-            console.log('unsubscribed from all');
+            _.each(this.subscriptions, function(topic) {
+              $.unsubscribe(topic);
+            });
           }
         }
       });
@@ -42,47 +50,37 @@ describe('BaseView', function() {
       expect(view1.$el).toBeDefined();
     });
 
-    // it('can subscribe to a channel', function() {
-    //   var message;
-    //   view1.channel = postal.channel('test');
+    it('can subscribe to a channel', function() {
+      var message;
 
-    //   view1.subscribe('sayHello', function(data) {
-    //     message = data;
-    //   });
+      view1.subscribe('sayHello', function(_, data) {
+        message = data;
+      });
 
-    //   postal.publish({
-    //     channel: 'test',
-    //     topic: 'sayHello',
-    //     data: 'Hello'
-    //   });
+      view1.publish('sayHello', 'Hello');
 
-    //   waitsFor(function() { return message; });
+      waitsFor(function() { return message; });
 
-    //   runs(function() {
-    //     expect(message).toBe('Hello');
-    //   });
-    // });
+      runs(function() {
+        expect(message).toBe('Hello');
+      });
+    });
 
-    // it('can publish messages to a channel', function() {
-    //   var message;
-    //   view1.channel = postal.channel('test');
+    it('can publish messages to a channel', function() {
+      var message;
 
-    //   var sub = postal.subscribe({
-    //     channel: 'test',
-    //     topic: 'sayHello',
-    //     callback: function(data) {
-    //       message = data;
-    //     }
-    //   });
+      $.subscribe('sayHello', function(_, data) {
+        message = data;
+      });
 
-    //   view1.publish('sayHello', 'Hello');
+      view1.publish('sayHello', 'Hello');
 
-    //   waitsFor(function() { return message; });
+      waitsFor(function() { return message; });
 
-    //   runs(function() {
-    //     expect(message).toBe('Hello');
-    //   });
-    // });
+      runs(function() {
+        expect(message).toBe('Hello');
+      });
+    });
   });
 
 });
