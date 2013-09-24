@@ -42,6 +42,11 @@ var BaseView = (function (_, Backbone) {
     },
 
     /**
+     * Executes before rendering the view.
+     */
+    beforeRender: function() {},
+
+    /**
      * Renders the current view in the specified template.
      */
     render: function() {
@@ -55,6 +60,11 @@ var BaseView = (function (_, Backbone) {
       this.compileTemplate();
       this.$el.html(this.getTemplate(data));
     },
+
+    /**
+     * Executes after rendering the view.
+     */
+    afterRender: function() {},
 
     /**
      * This should be redefined by the extended class. It should compile the raw template into
@@ -108,11 +118,7 @@ var BaseView = (function (_, Backbone) {
       }
 
       this.unsubscribeAll();
-    },
-
-    beforeRender: function() {},
-
-    afterRender: function() {}
+    }
   });
 
 }(_, Backbone));
