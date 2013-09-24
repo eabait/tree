@@ -3,8 +3,6 @@ var BaseView = (function (_, Backbone) {
 
   return Backbone.View.extend({
 
-    channel: null,
-
     subscriptions: [],
 
     /**
@@ -17,6 +15,14 @@ var BaseView = (function (_, Backbone) {
         throw new Error('All views must specify their template at creation');
       } else {
         this.template = this.template ? this.template : this.options.template;
+      }
+
+      if ((!this.options.pubsub) || (_.difference(_.keys(this.options.pubsub), ['subscribe', 'publish', 'unsubscribeAll']).length !== 0)) {
+        throw new Error('All views must specify their own pubsub methods (subscribe, publish, unsubscribeAll).');
+      } else {
+        this.subscribe = this.options.pubsub.subscribe;
+        this.publish = this.options.pubsub.publish;
+        this.unsubscribeAll = this.options.pubsub.unsubscribeAll;
       }
 
       var that = this;
@@ -34,6 +40,11 @@ var BaseView = (function (_, Backbone) {
     },
 
     /**
+     * Executes before rendering the view.
+     */
+    beforeRender: function() {},
+
+    /**
      * Renders the current view in the specified template.
      */
     render: function() {
@@ -47,6 +58,11 @@ var BaseView = (function (_, Backbone) {
       this.compileTemplate();
       this.$el.html(this.getTemplate(data));
     },
+
+    /**
+     * Executes after rendering the view.
+     */
+    afterRender: function() {},
 
     /**
      * This should be redefined by the extended class. It should compile the raw template into
@@ -73,31 +89,20 @@ var BaseView = (function (_, Backbone) {
 
     /**
      * Subscribe the view to a topic of a channel.
-     * @param  {[type]}   topic
-     * @param  {Function} callback
-     * @return {[type]}
      */
-    subscribe: function(topic, callback) {
-      var subscription = this.channel.subscribe(topic, callback);
-      this.subscriptions.push(subscription);
+    subscribe: function() {
     },
 
     /**
      * Publishes data in a postal channel.
-     * @param  {[type]} topic
-     * @param  {[type]} data
      */
-    publish: function(topic, data) {
-      this.channel.publish(topic, data);
+    publish: function() {
     },
 
     /**
      * Removes all the Postal subscriptions of the view.
      */
     unsubscribeAll: function() {
-      _.each(this.subscriptions, function(subscription) {
-        subscription.unsubscribe();
-      });
     },
 
     /**
@@ -111,11 +116,7 @@ var BaseView = (function (_, Backbone) {
       }
 
       this.unsubscribeAll();
-    },
-
-    beforeRender: function() {},
-
-    afterRender: function() {}
+    }
   });
 
 }(_, Backbone));
