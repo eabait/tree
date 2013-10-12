@@ -1,4 +1,4 @@
-var ContainerView = (function (BaseView) {
+Tree.ContainerView = (function (BaseView) {
   'use strict';
 
   return BaseView.extend({
@@ -56,4 +56,4 @@ var ContainerView = (function (BaseView) {
 
   });
 
-}(BaseView));
+}(Tree.BaseView));

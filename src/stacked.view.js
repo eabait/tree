@@ -1,4 +1,4 @@
-var StackedView = (function (BaseView) {
+Tree.StackedView = (function (BaseView) {
 
   'use strict';
 
@@ -68,4 +68,4 @@ var StackedView = (function (BaseView) {
     }
   });
 
-}(BaseView));
+}(Tree.BaseView));

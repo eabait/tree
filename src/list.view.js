@@ -1,4 +1,4 @@
-var ListView = (function (BaseView) {
+Tree.ListView = (function (BaseView) {
   'use strict';
 
   return BaseView.extend({
@@ -58,4 +58,4 @@ var ListView = (function (BaseView) {
     }
   });
 
-}(BaseView));
+}(Tree.BaseView));

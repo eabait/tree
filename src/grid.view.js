@@ -1,4 +1,4 @@
-var GridView = (function (BaseView) {
+Tree.GridView = (function (BaseView) {
   'use strict';
 
   return BaseView.extend({
@@ -99,4 +99,4 @@ var GridView = (function (BaseView) {
     }
   });
 
-}(BaseView));
+}(Tree.BaseView));
