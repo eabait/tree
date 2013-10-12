@@ -43,6 +43,7 @@ Tree.BaseView = (function (_, Backbone) {
      * @constructor
      */
     initialize: function() {
+
       if (!this.template &&
         (!this.options.template || !_.isString(this.options.template))) {
         throw new Error('Tree. All views must be provided with their' +
@@ -132,9 +133,17 @@ Tree.BaseView = (function (_, Backbone) {
       return this;
     },
 
+    /**
+     * To be called before render method
+     * @return {Object} return this
+     */
     beforeRender: function() {
     },
 
+    /**
+     * To be called after render method
+     * @return {Object} return this
+     */
     afterRender: function() {
     },
 
@@ -164,6 +173,9 @@ Tree.BaseView = (function (_, Backbone) {
       return this;
     },
 
+    /**
+     * Disposes the view.
+     */
     dispose: function() {
       if (this.model) {
         this.model.off();
