@@ -28,7 +28,10 @@ module.exports = function(grunt) {
           ],
           specs: Path.SPECS,
           keepRunner: true,
-          helpers: 'vendor/jasmine-jquery/jasmine-jquery.js'
+          helpers: [
+            'vendor/jasmine-jquery/jasmine-jquery.js',
+            'vendor/jasmine-ajax/mock-ajax.js'
+          ]
         }
       }
     },

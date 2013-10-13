@@ -37,27 +37,23 @@ Tree.BaseView = (function (_, Backbone) {
      */
     action: 'render',
 
+    /**
+     * Human readable view identifier, like CartView, or BookView
+     * @type {String}
+     */
     name: null,
 
     /**
      * @constructor
      */
     initialize: function() {
-
-      if (!this.template &&
-        (!this.options.template || !_.isString(this.options.template))) {
-        throw new Error('Tree. All views must be provided with their' +
-          'template at creation');
-      } else {
-        this.template = this.template ? this.template : this.options.template;
-      }
-
+      this.template = this.options.template || this.template;
       this.loadingTemplate = this.options.loadingTemplate || this.loadingTemplate;
-      this.compiledTemplates = {};
-
       this.action = this.options.action || this.action;
       this.bindModelWith = this.options.bindModelWith || this.bindModelWith;
       this.name = this.options.name || this.name;
+
+      this.compiledTemplates = {};
 
       _.bindAll(this, 'beforeRender', 'render', 'afterRender');
       this.render = _.wrap(this.render, function(render) {
@@ -110,26 +106,29 @@ Tree.BaseView = (function (_, Backbone) {
      * @return {Function} returns a compiled template
      */
     getTemplate: function(templateId) {
-      if (!this.compiledTemplates[templateId]) {
+      if (!this.compiledTemplates.hasOwnProperty(templateId)) {
         this.compiledTemplates[templateId] = this.compileTemplate(this.fetchTemplate(templateId));
       }
       return this.compiledTemplates[templateId];
     },
 
     /**
-     * Default render method. Relies on getTemplate.
+     * Hook method to define how to add view elements in the DOM
+     */
+    createDomElements: function(elements) {
+      this.$el.html(elements);
+    },
+
+    /**
+     * Default render method. Relies on getTemplate, and createDomElements
      * @return {[type]} [description]
      */
     render: function() {
       var data = this.options.data || {};
-      var templateFunction = this.getTemplate(this.template);
-
       if (this.model) {
         data = this.model.toJSON();
       }
-
-      this.$el.html(templateFunction(data));
-
+      this.createDomElements(this.getTemplate(this.template)(data));
       return this;
     },
 
@@ -168,8 +167,13 @@ Tree.BaseView = (function (_, Backbone) {
       return this.model.fetch(options);
     },
 
+    /**
+     * Renders the loading template.
+     * @param  {[type]} loadingTemplateId [description]
+     * @return {[type]}                   [description]
+     */
     renderLoadingView: function(loadingTemplateId) {
-      this.$el.html(this.getTemplate(loadingTemplateId)());
+      this.createDomElements(this.getTemplate(loadingTemplateId)());
       return this;
     },
 
