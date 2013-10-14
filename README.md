@@ -13,8 +13,8 @@ to only one region.
 http://packery.metafizzy.co/
 
 ## Roadmap
-Version 0.1: BaseView, ContainerView. Test covergae at least of 85%.
-Version 0.2: ListView, PubSub mixins. Test covergae at least of 85%.
-Version 0.3: StackedView, GridView. Test coverage at least of 85%.
-Version 0.4: Integration with Effeckt.
-Version 0.5 to 1.0: TBD
+* Version 0.1: BaseView, ContainerView. Test covergae at least of 85%.
+* Version 0.2: ListView, PubSub mixins. Test covergae at least of 85%.
+* Version 0.3: StackedView, GridView. Test coverage at least of 85%.
+* Version 0.4: Integration with Effeckt.
+* Version 0.5 to 1.0: TBD
