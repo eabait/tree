@@ -53,3 +53,5 @@ lib-cov
 pids
 logs
 results
+
+coverage

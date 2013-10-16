@@ -136,6 +136,12 @@ describe('BaseView', function() {
       expect(view1.renderLoadingView).toHaveBeenCalled();
     });
 
+    it('should create a loading view when loading', function() {
+      spyOn(view1, 'createDomElements');
+      view1.renderLoadingView('#spinner');
+      expect(view1.createDomElements).toHaveBeenCalled();
+    });
+
     it('should allow render be binded to different model events', function() {
       view1.bindModelWith = 'change:sayHi';
       spyOn(view1, 'render');
@@ -143,6 +149,11 @@ describe('BaseView', function() {
       request = mostRecentAjaxRequest();
       request.response(response);
       expect(view1.render).toHaveBeenCalled();
+    });
+
+    it('should throw an error if bindModelWith property is not set', function() {
+      view1.bindModelWith = null;
+      expect(view1.load).toThrow();
     });
   });
 
@@ -157,6 +168,18 @@ describe('BaseView', function() {
       spyOn(view1, 'render');
       model1.trigger('sync');
       expect(view1.render).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Debugging', function() {
+    it('should provide a human-readable ID for debugging', function() {
+      view1.name = 'TestView';
+      expect(view1.getId()).toBe('TestView');
+    });
+
+    it('should override toString to show view id', function() {
+      view1.name = 'TestView';
+      expect(view1.toString()).toBe('[tree view TestView ]');
     });
   });
 });

@@ -31,7 +31,18 @@ module.exports = function(grunt) {
           helpers: [
             'vendor/jasmine-jquery/jasmine-jquery.js',
             'vendor/jasmine-ajax/mock-ajax.js'
-          ]
+          ],
+          template: require('grunt-template-jasmine-istanbul'),
+          templateOptions: {
+            coverage: 'coverage/coverage.json',
+            report: 'coverage',
+            thresholds: {
+              lines: 85,
+              statements: 85,
+              branches: 80,
+              functions: 85
+            }
+          }
         }
       }
     },
