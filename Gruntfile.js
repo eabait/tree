@@ -45,16 +45,37 @@ module.exports = function(grunt) {
           }
         }
       }
+    },
+
+    // Buids and minifies the sources
+    uglify: {
+      min: {
+        files: {
+          'dist/tree.min.js': ['src/*.js']
+        }
+      },
+      concat: {
+        options: {
+          beautify: true,
+          compress: false
+        },
+        files: {
+          'dist/tree.js': ['src/*.js']
+        }
+      }
     }
   });
 
   // Load grunt tasks
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   // default build task
   grunt.registerTask('default', 'test');
 
   // Dev task
   grunt.registerTask('test', ['jshint:all', 'jasmine:pivotal']);
+  // Build tasks
+  grunt.registerTask('build', ['jshint:all', 'jasmine:pivotal', 'uglify:min', 'uglify:concat']);
 };
