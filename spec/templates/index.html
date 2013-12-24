@@ -9,9 +9,25 @@
     <h1>{{sayHi}}</h1>
   </script>
 
+  <script id="header" type="text/x-handlebars-template">
+    {{home}}
+  </script>
+
+  <script id="footer" type="text/x-handlebars-template">
+    {{sayHi}}
+  </script>
+
+  <script id="layout" type="text/x-handlebars-template">
+    <header></header>
+    <div class="main-content"></div>
+    <footer></footer>
+  </script>
+
   <script id="spinner" type="text/x-handlebars-template">
     <p>Loading...</p>
   </script>
+
+  <div class="wrapper"></div>
 
 </body>
 </html>

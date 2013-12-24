@@ -24,11 +24,11 @@ Tree.BaseView = (function (_, Backbone) {
     compiledTemplates: {},
 
     /**
-     * bindModelWith this property will be used to bind view's render
+     * bindOn this property will be used to bind view's render
      * method to fetch calls to its model
      * @type {String}
      */
-    bindModelWith: 'sync',
+    bindOn: 'sync',
 
     /**
      * Main view action. Layout managers will use this property to know
@@ -43,15 +43,25 @@ Tree.BaseView = (function (_, Backbone) {
      */
     name: null,
 
+
+    /**
+     * JavaScript Template object. Stores precompiled templates
+     * as functions indexed by name
+     * @type {Object}
+     */
+    jst: null,
+
     /**
      * @constructor
      */
     initialize: function() {
       this.template = this.options.template || this.template;
-      this.loadingTemplate = this.options.loadingTemplate || this.loadingTemplate;
+      this.loadingTemplate =
+        this.options.loadingTemplate || this.loadingTemplate;
       this.action = this.options.action || this.action;
-      this.bindModelWith = this.options.bindModelWith || this.bindModelWith;
+      this.bindOn = this.options.bindOn || this.bindOn;
       this.name = this.options.name || this.name;
+      this.jst = this.options.jst || this.jst;
 
       this.compiledTemplates = {};
 
@@ -84,9 +94,11 @@ Tree.BaseView = (function (_, Backbone) {
     },
 
     /**
-     * Hook method. Override if templates will be
-     * fetched from DOM, or server.
-     * Default implementation relies on a JST object
+     * Hook method. Override to define how html-templates
+     * should be fetched.
+     *
+     * If a JST object is defined then it will be used to fetch the
+     * precompiled template from it.
      *
      * @param {String} templateId  Template id to be fetched
      * @return {String | Function} May return a Function if templates are
@@ -94,26 +106,31 @@ Tree.BaseView = (function (_, Backbone) {
      *                   Or strings if they are fetched from DOM or server.
      */
     fetchTemplate: function(templateId) {
-      return templateId;
+      return (this.jst && this.jst[templateId]) ? this.jst[templateId] : templateId;
     },
 
     /**
-     * Template method to get a template. Relies on fetchTemplate to fetch
-     * the template, and compileTemplate to compile it.
-     * Caches compiled template into this.compiledTemplate.
+     * <i>Template method</i> to fetch an html-template. Relies on
+     * fetchTemplate to fetch the template, and compileTemplate to
+     * compile it.
+     * Caches compiled template into this.compiledTemplate. Is assumed views
+     * can have more than one template associated. For instance, one template
+     * for rendering, and another for loading state (like a spinner)
      *
      * @param  {String}   templateId Template identifier
      * @return {Function} returns a compiled template
      */
     getTemplate: function(templateId) {
       if (!this.compiledTemplates.hasOwnProperty(templateId)) {
-        this.compiledTemplates[templateId] = this.compileTemplate(this.fetchTemplate(templateId));
+        this.compiledTemplates[templateId] =
+          this.compileTemplate(this.fetchTemplate(templateId));
       }
       return this.compiledTemplates[templateId];
     },
 
     /**
      * Hook method to define how to add view elements in the DOM
+     * Default implementation reeplaces this.$el elements
      */
     createDomElements: function(elements) {
       this.$el.html(elements);
@@ -154,11 +171,11 @@ Tree.BaseView = (function (_, Backbone) {
      * @return {Promise} returns a promise object on the request
      */
     load: function(options) {
-      if (!this.bindModelWith) {
+      if (!this.bindOn) {
         throw new Error('Tree error. View ' + this.getId() +
-          ' requires a bindModelWith property to be set');
+          ' requires a bindOn property to be set');
       }
-      this.listenTo(this.model, this.bindModelWith, this.render);
+      this.listenTo(this.model, this.bindOn, this.render);
 
       if (this.loadingTemplate) {
         this.renderLoadingView(this.loadingTemplate);

@@ -13,7 +13,7 @@ describe('BaseView', function() {
       url: 'testUrl'
     });
 
-    HandlebarsView = Tree.BaseView.extend({
+    var HandlebarsView = Tree.BaseView.extend({
       compileTemplate: function(template) {
         return Handlebars.compile(template);
       },
@@ -30,7 +30,7 @@ describe('BaseView', function() {
       tagName: 'ul',
       template: '#helloWorld',
       model: model1
-    })
+    });
   });
 
   describe('Instantiation', function() {
@@ -143,7 +143,7 @@ describe('BaseView', function() {
     });
 
     it('should allow render be binded to different model events', function() {
-      view1.bindModelWith = 'change:sayHi';
+      view1.bindOn = 'change:sayHi';
       spyOn(view1, 'render');
       view1.load();
       request = mostRecentAjaxRequest();
@@ -151,8 +151,8 @@ describe('BaseView', function() {
       expect(view1.render).toHaveBeenCalled();
     });
 
-    it('should throw an error if bindModelWith property is not set', function() {
-      view1.bindModelWith = null;
+    it('should throw an error if bindOn property is not set', function() {
+      view1.bindOn = null;
       expect(view1.load).toThrow();
     });
   });
