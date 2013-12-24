@@ -9,3 +9,5 @@ It also allows to define before, and after render methods.
 These two view types can be used as a basis to construct complex view hierarchies in Backbone applications. The following concerns are addressed by Tree views:
 * View lifecyle: load, render, dispose methods
 * Memory management: BaseView provides a default dispose method to release memory used by a view
+
+Published in bower under: backbone-tree
