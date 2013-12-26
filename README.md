@@ -19,7 +19,7 @@ AMD support is planned too.
 - Published in **bower** under: backbone-tree
 
 ##Examples
-The following example demostrate how to use Tree.BaseView using Handlebar templates stored in the DOM to render Backbone.Model data.
+The following example demonstrate how to use Tree.BaseView using Handlebar templates stored in the DOM to render Backbone.Model data.
 ```javascript
     var UserModel = Backbone.Model.extend({
       url: '/user/'
