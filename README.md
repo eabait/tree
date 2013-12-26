@@ -19,6 +19,19 @@ AMD support is planned too.
 - Published in **bower** under: backbone-tree
 
 ##Examples
+### BaseView template management
+By default, BaseView will try to fetch templates from a [JST](http://ricostacruz.com/backbone-patterns/#jst_templates) object. That object can be set when constructing an instance:
+```javascript
+    var toDoView = new Tree.BaseView({
+      el: '.todo',
+      jst: JST,
+      template: 'todo.hbs'
+    });
+    
+    toDoView.render();
+```
+In this example, toDoView will render a todo element using a templating function stored as a property called 'todo.hbs' in the object JST.
+
 The following example demonstrate how to use Tree.BaseView using Handlebar templates stored in the DOM to render Backbone.Model data.
 ```javascript
     var UserModel = Backbone.Model.extend({
@@ -58,6 +71,40 @@ The following example demonstrate how to use Tree.BaseView using Handlebar templ
     *  4) fetch, compile, and render the template using the response
     */
     userView.load();
+```
+### Composing views
+ContainerView is used to manage subviews following a composite pattern. ContainerView instances can be composed inside other ContainerView instances allowing the creating of complex view **Trees**.
+
+```javascript
+    var composed = new Tree.ContainerView({
+      el: '.main-content',
+      template: 'layout.hbs',
+      jst: JST
+    });
+
+    var subview1 = new SubView({
+      tagName: 'p',
+      template: 'main.hbs',
+      jst: JST
+    });
+
+    var header = new SubView({
+      tagName: 'p',
+      template: 'header.hbs'
+    });
+
+    var footer = new SubView({
+      tagName: 'p',
+      template: '#footer'
+    });
+    
+    view1.addView('header', header);
+    view1.addView('footer', footer);
+    view1.addView('.main-content', subview1);
+
+    view1.render();
+    
+
 ```
 
 ##License
