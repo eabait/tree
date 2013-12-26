@@ -57,7 +57,7 @@ The following example demonstrate how to use Tree.BaseView using Handlebar templ
     });
 
     userView = new YourProjectBaseView({
-      tagName: '.view-container',
+      el: '.view-container',
       template: '#userTemplate',
       model: userModel,
       bindOn: 'change:name'
