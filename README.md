@@ -32,32 +32,35 @@ By default, BaseView will try to fetch templates from a [JST](http://ricostacruz
 ```
 In this example, toDoView will render a todo element using a templating function stored as a property called 'todo.hbs' in the object JST.
 
-The following example demonstrate how to use Tree.BaseView using Handlebar templates stored in the DOM to render Backbone.Model data.
+The following example demonstrate how to override the hook methods for template management.
 ```javascript
     var UserModel = Backbone.Model.extend({
       url: '/user/'
     });
 
-    var YourProjectBaseView = Tree.BaseView.extend({
-    
-      loadingTemplate: '#spinner-tpl',
+    //Override BaseView fetchTemplate, and compileTemplate
+    //using a mixin in order to maintain the logic localized.
+    //This change will affect all objects that extends from
+    //BaseView's prototype including ContainerView
+    var HandlebarsMixin = {
+      compileTemplate: function(template) {
+        return Handlebars.compile(template);
+      },
       
       fetchTemplate: function(templateId) {
         return $(templateId).html();
-      },
-      
-      compileTemplate: function(template) {
-        return Handlebars.compile(template);
       }
-      
-    });
+    };
+ 
+    _.extend(Tree.BaseView.prototype, HandlebarsMixin);
 
     userModel = new UserModel({
       name: 'Foo Bar'
     });
 
-    userView = new YourProjectBaseView({
+    userView = new Tree.BaseView({
       el: '.view-container',
+      loadingTemplate: '#spinner-tpl',
       template: '#userTemplate',
       model: userModel,
       bindOn: 'change:name'
