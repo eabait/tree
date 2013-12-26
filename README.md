@@ -73,38 +73,56 @@ The following example demonstrate how to use Tree.BaseView using Handlebar templ
     userView.load();
 ```
 ### Composing views
-ContainerView is used to manage subviews following a composite pattern. ContainerView instances can be composed inside other ContainerView instances allowing the creating of complex view **Trees**.
+ContainerView is used to manage subviews following a composite pattern. ContainerView instances can be composed inside other ContainerView instances allowing the creation of complex view trees. The following example illustrates a basic example of this view type..
 
+```
+    <!-- layout.hbs -->
+    <header></header>
+    <div class="main-content"></div>
+    <footer></footer>
+```
 ```javascript
-    var composed = new Tree.ContainerView({
-      el: '.main-content',
+    var compositeView = new Tree.ContainerView({
+      el: '.wrapper',
       template: 'layout.hbs',
       jst: JST
     });
 
-    var subview1 = new SubView({
+    var mainView = new Tree.BaseView({
       tagName: 'p',
       template: 'main.hbs',
       jst: JST
     });
 
-    var header = new SubView({
+    var header = new Tree.BaseView({
       tagName: 'p',
-      template: 'header.hbs'
+      template: 'header.hbs',
+      jst: JST
     });
 
-    var footer = new SubView({
+    var footer = new Tree.BaseView({
       tagName: 'p',
-      template: '#footer'
+      template: 'footer.hbs',
+      jst: JST
     });
     
-    view1.addView('header', header);
-    view1.addView('footer', footer);
-    view1.addView('.main-content', subview1);
+    compositeView.addView('header', header);
+    compositeView.addView('footer', footer);
+    compositeView.addView('.main-content', mainView);
 
-    view1.render();
+    /*
+    * Render will:
+    * 1) Render layout.hbs template, which will set all regions elements in the DOM
+    * 2) Render each subview into its own region
+    */
+    compositeView.render();
     
-
+    /*
+    * Disposes compositeView along with all its subviews
+    * This method is used to avoid the presence of memory leaks
+    * It can be overriden if necessary to reflect different requirements
+    */
+    compositeView.dispose();
 ```
 
 ##License
