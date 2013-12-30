@@ -1,6 +1,6 @@
 Tree
 ====
-Tree is a small library that extends Backbone.js with new types of views. These views are based on the author experience building Single-Page Applications using Backbone.js.
+Tree is a small library that extends Backbone.js with new types of views.
 
 ##Overview
 Tree provides two new view types: BaseView, and ContainerView.
@@ -76,7 +76,7 @@ The following example demonstrate how to override the hook methods for template 
     userView.load();
 ```
 ### Composing views
-ContainerView is used to manage subviews following a composite pattern. ContainerView instances can be composed inside other ContainerView instances allowing the creation of complex view trees. The following example illustrates a basic example of this view type..
+ContainerView is used to manage subviews following a composite pattern. Instances of this view can be composed inside other view instances allowing the creation of complex view trees. The following example illustrates a basic example of this view type..
 
 ```
     <!-- layout.hbs -->
