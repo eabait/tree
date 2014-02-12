@@ -130,3 +130,7 @@ ContainerView is used to manage subviews following a composite pattern. Instance
 A more complex example can be found [here](https://gist.github.com/eabait/8136194)
 ##License
 Tree is licensed under the [MIT] (https://github.com/eabait/tree/blob/master/LICENSE)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/eabait/tree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
