@@ -35,6 +35,12 @@ describe('BaseView', function() {
 
   describe('Instantiation', function() {
 
+    it('must save instantiation options', function() {
+      expect(view1.options.tagName).not.toBeNull();
+      expect(view1.options.template).not.toBeNull();
+      expect(view1.options.model).not.toBeNull();
+    });
+
     it('should be able to create itself', function() {
       expect(view1).not.toBeNull();
     });

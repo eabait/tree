@@ -81,6 +81,13 @@ describe('ContainerView', function() {
       expect(header.dispose).toHaveBeenCalled();
     });
 
+    it('should fail if region does not exists', function() {
+      var addWrongRegion = function() {
+        view1.showView('xx123', header);
+      };
+      expect(addWrongRegion).toThrow();
+    });
+
   });
 
   describe('Render subviews', function() {
