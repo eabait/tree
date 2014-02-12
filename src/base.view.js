@@ -54,10 +54,11 @@ Tree.BaseView = (function (_, Backbone) {
     /**
      * @constructor
      */
-    initialize: function() {
+    initialize: function(options) {
+      this.options = options;
       this.template = this.options.template || this.template;
       this.loadingTemplate =
-        this.options.loadingTemplate || this.loadingTemplate;
+      this.options.loadingTemplate || this.loadingTemplate;
       this.action = this.options.action || this.action;
       this.bindOn = this.options.bindOn || this.bindOn;
       this.name = this.options.name || this.name;
