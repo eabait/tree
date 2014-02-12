@@ -10,7 +10,8 @@ Tree.BaseView = function(a, b) {
         action: "render",
         name: null,
         jst: null,
-        initialize: function() {
+        initialize: function(b) {
+            this.options = b;
             this.template = this.options.template || this.template;
             this.loadingTemplate = this.options.loadingTemplate || this.loadingTemplate;
             this.action = this.options.action || this.action;
