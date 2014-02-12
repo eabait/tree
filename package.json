@@ -1,6 +1,7 @@
 {
   "name": "tree",
-  "version": "0.2.1",
+  "version": "0.2.2",
+  "repository": "https://github.com/eabait/tree.git",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jasmine": "0.5.2",
