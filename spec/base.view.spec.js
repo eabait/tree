@@ -7,7 +7,7 @@ describe('BaseView', function() {
     jasmine.getFixtures().fixturesPath = 'spec/templates/';
     loadFixtures('index.html');
 
-    jasmine.Ajax.useMock();
+    jasmine.Ajax.install();
 
     var TestModel = Backbone.Model.extend({
       url: 'testUrl'
@@ -31,6 +31,10 @@ describe('BaseView', function() {
       template: '#helloWorld',
       model: model1
     });
+  });
+
+  afterEach(function() {
+    jasmine.Ajax.uninstall();
   });
 
   describe('Instantiation', function() {
@@ -128,7 +132,7 @@ describe('BaseView', function() {
     it('should call render once data has been fetched', function() {
       spyOn(view1, 'render');
       view1.load();
-      request = mostRecentAjaxRequest();
+      request = jasmine.Ajax.requests.mostRecent();
       request.response(response);
       expect(view1.render).toHaveBeenCalled();
     });
@@ -137,7 +141,7 @@ describe('BaseView', function() {
       view1.loadingTemplate = '#spinner';
       spyOn(view1, 'renderLoadingView');
       view1.load();
-      request = mostRecentAjaxRequest();
+      request = jasmine.Ajax.requests.mostRecent();
       request.response(response);
       expect(view1.renderLoadingView).toHaveBeenCalled();
     });
@@ -152,7 +156,7 @@ describe('BaseView', function() {
       view1.bindOn = 'change:sayHi';
       spyOn(view1, 'render');
       view1.load();
-      request = mostRecentAjaxRequest();
+      request = jasmine.Ajax.requests.mostRecent();
       request.response(response);
       expect(view1.render).toHaveBeenCalled();
     });

@@ -112,7 +112,7 @@ describe('ContainerView', function() {
 
   describe('Dispose subviews', function() {
 
-    it('should be able to render all of its subviews', function() {
+    it('should be able to dispose all of its subviews', function() {
       spyOn(header, 'dispose');
       spyOn(footer, 'dispose');
       spyOn(subview1, 'dispose');

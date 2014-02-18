@@ -1,0 +1,94 @@
+<DOCTYPE html>
+<html>
+  <head>
+    <meta charset=utf-8 />
+    <title>Tree basic example</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+
+  <body>
+
+  <div class="main-wrapper"></div>
+
+    <script id="joke-tpl" type="text/x-handlebars-template">
+      <p>{{value.joke}}</p>
+    </script>
+
+    <script id="layout-tpl" type="text/x-handlebars-template">
+      <section>
+        <div class="jokes"></div>
+        <button>Refresh!</button>
+      </section>
+    </script>
+
+    <script id="spinner-tpl" type="text/x-handlebars-template">
+      <p>Loading...</p>
+    </script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="http://documentcloud.github.io/underscore/underscore-min.js"></script>
+    <script src="http://documentcloud.github.io/backbone/backbone-min.js">  </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
+    <script src="dist/tree.js"></script>
+    <script>
+      //A model to fetch jokes from a web service
+      var JokeModel = Backbone.Model.extend({
+        url: 'http://api.icndb.com/jokes/random'
+      });
+
+      //Override BaseView fetchTemplate, and compileTemplate
+      //using a mixin in order to maintain the logic localized
+      var HandlebarsMixin = {
+        compileTemplate: function(template) {
+          return Handlebars.compile(template);
+        },
+        fetchTemplate: function(templateId) {
+          return $(templateId).html();
+        }
+      };
+
+      //Override BaseView compileTemplate, and fetchTemplate
+      //this change will affect all objects that extends from
+      //BaseView's prototype including ContainerView
+      _.extend(Tree.BaseView.prototype, HandlebarsMixin);
+
+      //Jokes view instance
+      var jokeView = new Tree.BaseView({
+        name: 'JokeView',
+
+        loadingTemplate: '#spinner-tpl',
+
+        template: '#joke-tpl',
+
+        action: 'load',
+
+        model: new JokeModel()
+      });
+
+      //The container view
+      var MainView = Tree.ContainerView.extend({
+        name: 'MainView',
+
+        template: '#layout-tpl',
+
+        events: {
+          'click button': 'onButtonClick'
+        },
+
+        onButtonClick: function(e) {
+          jokeView.load();
+        }
+      });
+
+      var mainView = new MainView({
+        el: '.main-wrapper'
+      });
+
+      //Add the jokes view into its own region
+      //and then render
+      mainView.addView('.jokes', jokeView);
+      mainView.render();
+
+    </script>
+  </body>
+</html>

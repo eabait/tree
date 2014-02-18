@@ -10,7 +10,8 @@ Tree.BaseView = function(a, b) {
         action: "render",
         name: null,
         jst: null,
-        initialize: function() {
+        initialize: function(b) {
+            this.options = b || {};
             this.template = this.options.template || this.template;
             this.loadingTemplate = this.options.loadingTemplate || this.loadingTemplate;
             this.action = this.options.action || this.action;
@@ -41,15 +42,18 @@ Tree.BaseView = function(a, b) {
             }
             return this.compiledTemplates[a];
         },
-        createDomElements: function(a) {
-            this.$el.html(a);
-        },
-        render: function() {
+        getElementsToRender: function() {
             var a = this.options.data || {};
             if (this.model) {
                 a = this.model.toJSON();
             }
-            this.createDomElements(this.getTemplate(this.template)(a));
+            return this.getTemplate(this.template)(a);
+        },
+        createDomElements: function(a) {
+            this.$el.html(a);
+        },
+        render: function() {
+            this.createDomElements(this.getElementsToRender());
             return this;
         },
         beforeRender: function() {},
@@ -126,3 +130,71 @@ Tree.ContainerView = function(a) {
         }
     });
 }(Tree.BaseView);
+
+Tree.ListView = function(a, b) {
+    "use strict";
+    return a.extend({
+        modelToViewMap: {},
+        tagName: "ul",
+        listItemWrapper: "li",
+        itemView: null,
+        bindOn: "reset",
+        initialize: function() {
+            a.prototype.initialize.apply(this, arguments);
+            if (!this.options.itemView) {
+                throw new Error("Tree error. View " + this.getId() + " requires an " + "itemView to be passed to the constructor in the config object");
+            }
+            this.itemView = this.options.itemView;
+            this.listItemWrapper = this.options.listItemWrapper || this.listItemWrapper;
+            this.listenTo(this.model, "reset", this.render);
+            this.listenTo(this.model, "add", this.onAddedModel);
+            this.listenTo(this.model, "remove", this.onRemovedModel);
+        },
+        at: function(a) {
+            var c = b.values(this.modelToViewMap);
+            return c.length ? c[a] : null;
+        },
+        render: function() {
+            var a = "";
+            this.model.each(b.bind(function(b, c) {
+                var d = new this.itemView({
+                    model: b
+                });
+                a += this.makeItemViewElements(d);
+                this.modelToViewMap[b.id] = d;
+            }, this));
+            this.createDomElements(a);
+            return this;
+        },
+        makeItemViewElements: function(a) {
+            return "<" + this.listItemWrapper + ">" + a.getElementsToRender() + "</" + this.listItemWrapper + ">";
+        },
+        onAddedModel: function(a) {
+            var b = new this.itemView({
+                model: a
+            });
+            var c = "";
+            c += this.makeItemViewElements(b);
+            this.modelToViewMap[a.id] = b;
+            this.$el.append(c);
+        },
+        onRemovedModel: function(a) {
+            var b = this.modelToViewMap[a.id];
+            if (b) {
+                b.remove();
+                delete this.modelToViewMap[a.id];
+            } else {
+                throw new Error("Tree error. View " + this.getId() + " is trying to remove " + "a subView that does not exists");
+            }
+        },
+        dispose: function() {
+            a.prototype.dispose.apply(this, arguments);
+            for (var b in this.modelToViewMap) {
+                this.modelToViewMap[b].dispose();
+                delete this.modelToViewMap[b];
+            }
+            this.modelToViewMap = {};
+            delete this.modelToViewMap;
+        }
+    });
+}(Tree.BaseView, _);

@@ -129,6 +129,14 @@ Tree.BaseView = (function (_, Backbone) {
       return this.compiledTemplates[templateId];
     },
 
+    getElementsToRender: function() {
+      var data = this.options.data || {};
+      if (this.model) {
+        data = this.model.toJSON();
+      }
+      return this.getTemplate(this.template)(data);
+    },
+
     /**
      * Hook method to define how to add view elements in the DOM
      * Default implementation reeplaces this.$el elements
@@ -138,15 +146,12 @@ Tree.BaseView = (function (_, Backbone) {
     },
 
     /**
-     * Default render method. Relies on getTemplate, and createDomElements
+     * Default render method. Relies on getElementsToRender,
+     * and createDomElements
      * @return {[type]} [description]
      */
     render: function() {
-      var data = this.options.data || {};
-      if (this.model) {
-        data = this.model.toJSON();
-      }
-      this.createDomElements(this.getTemplate(this.template)(data));
+      this.createDomElements(this.getElementsToRender());
       return this;
     },
 
