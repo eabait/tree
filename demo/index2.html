@@ -16,13 +16,17 @@
 
     <script id="layout-tpl" type="text/x-handlebars-template">
       <section>
-        <div class="repositories"></div>
-        <button>Refresh!</button>
+        <ul class="repositories"></ul>
+        <button>Load</button>
       </section>
     </script>
 
     <script id="spinner-tpl" type="text/x-handlebars-template">
       <p>Loading...</p>
+    </script>
+
+    <script id="empty-tpl" type="text/x-handlebars-template">
+      <p>Click on Load</p>
     </script>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -55,15 +59,15 @@
       //Jokes view instance
       var RepoView = Tree.BaseView.extend({
         name: 'RepoView',
-
-        loadingTemplate: '#spinner-tpl',
-
         template: '#repository-tpl'
       });
 
       var repoListView = new Tree.ListView({
         itemView: RepoView,
-        model: new StarredRepositoriesCollection()
+        model: new StarredRepositoriesCollection(),
+        loadingTemplate: '#spinner-tpl',
+        emptyTpl: '#empty-tpl',
+        action: 'noOp'
       });
 
       //The container view
@@ -77,7 +81,9 @@
         },
 
         onButtonClick: function(e) {
-          repoListView.load();
+          repoListView.load({
+            reset: true
+          });
         }
       });
 

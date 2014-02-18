@@ -27,7 +27,7 @@ By default, BaseView will try to fetch templates from a [JST](http://ricostacruz
       jst: JST,
       template: 'todo.hbs'
     });
-    
+
     toDoView.render();
 ```
 In this example, toDoView will render a todo element using a templating function stored as a property called 'todo.hbs' in the object JST.
@@ -46,12 +46,12 @@ The following example demonstrate how to override the hook methods for template 
       compileTemplate: function(template) {
         return Handlebars.compile(template);
       },
-      
+
       fetchTemplate: function(templateId) {
         return $(templateId).html();
       }
     };
- 
+
     _.extend(Tree.BaseView.prototype, HandlebarsMixin);
 
     userModel = new UserModel({
@@ -65,9 +65,9 @@ The following example demonstrate how to override the hook methods for template 
       model: userModel,
       bindOn: 'change:name'
     });
-    
+
     /*
-    * Load will: 
+    * Load will:
     *  1) fetch, compile, and render the loadingTemplate
     *  2) call the fetch method of the userModel instance
     *  3) bind the view to the model on the event specified by bindOn
@@ -76,7 +76,7 @@ The following example demonstrate how to override the hook methods for template 
     userView.load();
 ```
 ### Composing views
-ContainerView is used to manage subviews following a composite pattern. Instances of this view can be composed inside other view instances allowing the creation of complex view trees. The following example illustrates a basic example of this view type..
+ContainerView is used to manage subviews following a composite pattern. Instances of this view can be composed inside other view instances allowing the creation of complex view trees. The following example illustrates a basic example of this view type.
 
 ```
     <!-- layout.hbs -->
@@ -108,7 +108,7 @@ ContainerView is used to manage subviews following a composite pattern. Instance
       template: 'footer.hbs',
       jst: JST
     });
-    
+
     compositeView.addView('header', header);
     compositeView.addView('footer', footer);
     compositeView.addView('.main-content', mainView);
@@ -119,7 +119,7 @@ ContainerView is used to manage subviews following a composite pattern. Instance
     * 2) Render each subview into its own region
     */
     compositeView.render();
-    
+
     /*
     * Disposes compositeView along with all its subviews
     * This method is used to avoid the presence of memory leaks
@@ -128,5 +128,22 @@ ContainerView is used to manage subviews following a composite pattern. Instance
     compositeView.dispose();
 ```
 A more complex example can be found [here](https://gist.github.com/eabait/8136194)
+### List view
+ListView is used to render views based on a given Backbone.Collection. Structural changes to the underlying collection trigger updates to the view. ListView binds to *reset*, *add*, and *remove* events.
+```javascript
+    //RepoView will be used to create each item view
+    var RepoView = Tree.BaseView.extend({
+      name: 'RepoView',
+      template: '#repository-tpl'
+    });
+
+    //ListView takes as option, the function to create item views,
+    // and the collection
+    var repoListView = new Tree.ListView({
+      itemView: RepoView,
+      model: new StarredRepositoriesCollection(),
+      loadingTemplate: '#spinner-tpl',
+    });
+```
 ##License
 Tree is licensed under the [MIT] (https://github.com/eabait/tree/blob/master/LICENSE)

@@ -5,8 +5,6 @@ Tree.ListView = (function(BaseView, _) {
 
     modelToViewMap: {},
 
-    tagName: 'ul',
-
     listItemWrapper: 'li',
 
     itemView: null,

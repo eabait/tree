@@ -17,6 +17,8 @@ Tree.BaseView = (function (_, Backbone) {
      */
     loadingTemplate: '',
 
+    emptyTpl: '',
+
     /**
      * Compiled templates cache
      * @type {Object}
@@ -63,6 +65,7 @@ Tree.BaseView = (function (_, Backbone) {
       this.bindOn = this.options.bindOn || this.bindOn;
       this.name = this.options.name || this.name;
       this.jst = this.options.jst || this.jst;
+      this.emptyTpl = this.options.emptyTpl || this.emptyTpl;
 
       this.compiledTemplates = {};
 
@@ -197,6 +200,15 @@ Tree.BaseView = (function (_, Backbone) {
      */
     renderLoadingView: function(loadingTemplateId) {
       this.createDomElements(this.getTemplate(loadingTemplateId)());
+      return this;
+    },
+
+    noOp: function() {
+      return this.renderEmptyView();
+    },
+
+    renderEmptyView: function() {
+      this.createDomElements(this.getTemplate(this.emptyTpl)());
       return this;
     },
 
