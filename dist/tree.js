@@ -5,7 +5,7 @@ Tree.BaseView = function(a, b) {
     return b.View.extend({
         template: "",
         loadingTemplate: "",
-        emptyTpl: "",
+        emptyTemplate: "",
         compiledTemplates: {},
         bindOn: "sync",
         action: "render",
@@ -19,7 +19,7 @@ Tree.BaseView = function(a, b) {
             this.bindOn = this.options.bindOn || this.bindOn;
             this.name = this.options.name || this.name;
             this.jst = this.options.jst || this.jst;
-            this.emptyTpl = this.options.emptyTpl || this.emptyTpl;
+            this.emptyTemplate = this.options.emptyTemplate || this.emptyTemplate;
             this.compiledTemplates = {};
             a.bindAll(this, "beforeRender", "render", "afterRender");
             this.render = a.wrap(this.render, function(a) {
@@ -66,16 +66,19 @@ Tree.BaseView = function(a, b) {
             }
             this.listenTo(this.model, this.bindOn, this.render);
             if (this.loadingTemplate) {
-                this.renderLoadingView(this.loadingTemplate);
+                this.renderLoadingView();
             }
             return this.model.fetch(a);
         },
-        renderLoadingView: function(a) {
-            this.createDomElements(this.getTemplate(a)());
+        renderLoadingView: function() {
+            this.createDomElements(this.getTemplate(this.loadingTemplate)());
             return this;
         },
         noOp: function() {
-            return this.renderEmptyView();
+            if (this.emptyTemplate) {
+                this.renderEmptyView();
+            }
+            return this;
         },
         renderEmptyView: function() {
             this.createDomElements(this.getTemplate(this.emptyTpl)());
