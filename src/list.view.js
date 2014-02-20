@@ -11,6 +11,9 @@ Tree.ListView = (function(BaseView, _) {
 
     bindOn: 'reset',
 
+    /**
+     * Initialize the ListView instance with the passed options
+     */
     initialize: function() {
       BaseView.prototype.initialize.apply(this, arguments);
 
@@ -27,11 +30,21 @@ Tree.ListView = (function(BaseView, _) {
       this.listenTo(this.model, 'remove', this.onRemovedModel);
     },
 
+    /**
+     * Returns the view at a given index
+     * @param  {Number} subViewIndex Index
+     * @return {Object}              View stored at index
+     */
     at: function(subViewIndex) {
       var subViews = _.values(this.modelToViewMap);
       return (subViews.length) ? subViews[subViewIndex] : null;
     },
 
+    /**
+     * @Override Tree.BaseView
+     * Will be called when the associated collection triggers
+     * a <i>reset</i> event
+     */
     render: function() {
       var elementsToRender = '';
 
@@ -52,11 +65,21 @@ Tree.ListView = (function(BaseView, _) {
       return this;
     },
 
+    /**
+     * Helper method to build individual view items
+     * @param  {Object} subView subView to be rendered
+     * @return {String}         DOMNodes to be rendered
+     */
     makeItemViewElements: function(subView) {
       return '<' + this.listItemWrapper + '>' + subView.getElementsToRender() +
         '</' + this.listItemWrapper + '>';
     },
 
+    /**
+     * Used to add a new view item each time a model
+     * is added to the collection
+     * @param  {Object} model Inserted Backbone.Model
+     */
     onAddedModel: function(model) {
       var subView = new this.itemView({
           model: model
@@ -68,6 +91,11 @@ Tree.ListView = (function(BaseView, _) {
         .append(elementsToRender);
     },
 
+    /**
+     * Used to remove a view, once its associated model
+     * has been removed from the collection
+     * @param  {Object} model Removed Backbone.Model
+     */
     onRemovedModel: function(model) {
       var viewToRemove = this.modelToViewMap[model.id];
       if (viewToRemove) {
@@ -79,6 +107,9 @@ Tree.ListView = (function(BaseView, _) {
       }
     },
 
+    /**
+     * @Override Tree.BaseView
+     */
     dispose: function() {
       BaseView.prototype.dispose.apply(this, arguments);
 

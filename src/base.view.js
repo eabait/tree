@@ -17,7 +17,11 @@ Tree.BaseView = (function (_, Backbone) {
      */
     loadingTemplate: '',
 
-    emptyTpl: '',
+    /**
+     * View's empty template id
+     * @type {String}
+     */
+    emptyTemplate: '',
 
     /**
      * Compiled templates cache
@@ -34,7 +38,7 @@ Tree.BaseView = (function (_, Backbone) {
 
     /**
      * Main view action. Layout managers will use this property to know
-     * which method (render, load) to use when rendering the view as part
+     * which method (render, load, noOp) to use when rendering the view as part
      * of a composite view
      */
     action: 'render',
@@ -65,7 +69,7 @@ Tree.BaseView = (function (_, Backbone) {
       this.bindOn = this.options.bindOn || this.bindOn;
       this.name = this.options.name || this.name;
       this.jst = this.options.jst || this.jst;
-      this.emptyTpl = this.options.emptyTpl || this.emptyTpl;
+      this.emptyTemplate = this.options.emptyTemplate || this.emptyTemplate;
 
       this.compiledTemplates = {};
 
@@ -132,6 +136,11 @@ Tree.BaseView = (function (_, Backbone) {
       return this.compiledTemplates[templateId];
     },
 
+    /**
+     * Returns DOM elements to be rendered into this.$el
+     * Relies on getTemplate
+     * @return {DOM} DOM nodes to be inserted in this.$el
+     */
     getElementsToRender: function() {
       var data = this.options.data || {};
       if (this.model) {
@@ -187,7 +196,7 @@ Tree.BaseView = (function (_, Backbone) {
       this.listenTo(this.model, this.bindOn, this.render);
 
       if (this.loadingTemplate) {
-        this.renderLoadingView(this.loadingTemplate);
+        this.renderLoadingView();
       }
 
       return this.model.fetch(options);
@@ -195,18 +204,30 @@ Tree.BaseView = (function (_, Backbone) {
 
     /**
      * Renders the loading template.
-     * @param  {[type]} loadingTemplateId [description]
-     * @return {[type]}                   [description]
+     * @param  {String} loadingTemplateId
+     * @return {Object}                   return this
      */
-    renderLoadingView: function(loadingTemplateId) {
-      this.createDomElements(this.getTemplate(loadingTemplateId)());
+    renderLoadingView: function() {
+      this.createDomElements(this.getTemplate(this.loadingTemplate)());
       return this;
     },
 
+    /**
+     * Action to be used when a view must not render its model
+     * data. Can be used to render a default <i>empty view</i>
+     * @return {Object} return this
+     */
     noOp: function() {
-      return this.renderEmptyView();
+      if (this.emptyTemplate) {
+        this.renderEmptyView();
+      }
+      return this;
     },
 
+    /**
+     * Renders the empty template.
+     * @return {object} return this
+     */
     renderEmptyView: function() {
       this.createDomElements(this.getTemplate(this.emptyTpl)());
       return this;

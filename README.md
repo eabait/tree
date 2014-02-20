@@ -141,8 +141,14 @@ ListView is used to render views based on a given Backbone.Collection. Structura
     // and the collection
     var repoListView = new Tree.ListView({
       itemView: RepoView,
-      model: new StarredRepositoriesCollection(),
-      loadingTemplate: '#spinner-tpl',
+      model: new Backbone.Collection({
+        url: 'endpointUrl'
+      }),
+      loadingTemplate: '#spinner-tpl'
+    });
+
+    repoListView.load({
+      reset: true
     });
 ```
 ##License

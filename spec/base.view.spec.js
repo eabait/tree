@@ -28,6 +28,8 @@ describe('BaseView', function() {
 
     view1 = new HandlebarsView({
       tagName: 'ul',
+      loadingTemplate: '#spinner',
+      emptyTemplate: '#empty',
       template: '#helloWorld',
       model: model1
     });
@@ -116,6 +118,19 @@ describe('BaseView', function() {
       view1.render();
       expect(view1.afterRender).toHaveBeenCalled();
     });
+
+    it('should call renderEmptyView if noOp is set as action', function() {
+      spyOn(view1, 'renderEmptyView');
+      view1.noOp();
+      expect(view1.renderEmptyView).toHaveBeenCalled();
+    });
+
+    it('should not call renderEmptyView if emptyTemplate is not defined', function() {
+      delete view1.emptyTemplate;
+      spyOn(view1, 'renderEmptyView');
+      view1.noOp();
+      expect(view1.renderEmptyView).not.toHaveBeenCalled();
+    });
   });
 
   describe('Loading', function() {
@@ -148,7 +163,7 @@ describe('BaseView', function() {
 
     it('should create a loading view when loading', function() {
       spyOn(view1, 'createDomElements');
-      view1.renderLoadingView('#spinner');
+      view1.renderLoadingView();
       expect(view1.createDomElements).toHaveBeenCalled();
     });
 
