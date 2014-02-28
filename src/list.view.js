@@ -5,8 +5,6 @@ Tree.ListView = (function(BaseView, _) {
 
     modelToViewMap: {},
 
-    listItemWrapper: 'li',
-
     itemView: null,
 
     bindOn: 'reset',
@@ -23,9 +21,8 @@ Tree.ListView = (function(BaseView, _) {
       }
 
       this.itemView = this.options.itemView;
-      this.listItemWrapper= this.options.listItemWrapper || this.listItemWrapper;
 
-      this.listenTo(this.model, 'reset', this.render);
+      // this.listenTo(this.model, 'reset', this.render);
       this.listenTo(this.model, 'add', this.onAddedModel);
       this.listenTo(this.model, 'remove', this.onRemovedModel);
     },
@@ -46,7 +43,7 @@ Tree.ListView = (function(BaseView, _) {
      * a <i>reset</i> event
      */
     render: function() {
-      var elementsToRender = '';
+      this.$el.empty();
 
       this.model.each(_.bind(function(model, index) {
 
@@ -54,25 +51,13 @@ Tree.ListView = (function(BaseView, _) {
           model: model
         });
 
-        elementsToRender += this.makeItemViewElements(subView);
+        this.$el.append(subView.render().$el);
 
         this.modelToViewMap[model.id] = subView;
 
       }, this));
 
-      this.createDomElements(elementsToRender);
-
       return this;
-    },
-
-    /**
-     * Helper method to build individual view items
-     * @param  {Object} subView subView to be rendered
-     * @return {String}         DOMNodes to be rendered
-     */
-    makeItemViewElements: function(subView) {
-      return '<' + this.listItemWrapper + '>' + subView.getElementsToRender() +
-        '</' + this.listItemWrapper + '>';
     },
 
     /**
@@ -84,11 +69,9 @@ Tree.ListView = (function(BaseView, _) {
       var subView = new this.itemView({
           model: model
       });
-      var elementsToRender = '';
-      elementsToRender += this.makeItemViewElements(subView);
       this.modelToViewMap[model.id] = subView;
       this.$el
-        .append(elementsToRender);
+        .append(subView.render().$el);
     },
 
     /**

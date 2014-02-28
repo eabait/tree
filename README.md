@@ -130,26 +130,82 @@ ContainerView is used to manage subviews following a composite pattern. Instance
 A more complex example can be found [here](https://gist.github.com/eabait/8136194)
 ### List view
 ListView is used to render views based on a given Backbone.Collection. Structural changes to the underlying collection trigger updates to the view. ListView binds to *reset*, *add*, and *remove* events.
+
 ```javascript
-    //RepoView will be used to create each item view
-    var RepoView = Tree.BaseView.extend({
-      name: 'RepoView',
-      template: '#repository-tpl'
-    });
+    <!-- template definitions -->
+    <script id="repository-tpl" type="text/x-handlebars-template">
+      <a href={{html_url}}>{{name}}</a>
+    </script>
 
-    //ListView takes as option, the function to create item views,
-    // and the collection
-    var repoListView = new Tree.ListView({
-      itemView: RepoView,
-      model: new Backbone.Collection({
-        url: 'endpointUrl'
-      }),
-      loadingTemplate: '#spinner-tpl'
-    });
+    <script id="layout-tpl" type="text/x-handlebars-template">
+      <section>
+        <ul class="repositories"></ul>
+        <button>Load</button>
+      </section>
+    </script>
 
-    repoListView.load({
-      reset: true
-    });
+    <script id="spinner-tpl" type="text/x-handlebars-template">
+      <p>Loading...</p>
+    </script>
+
+    <script id="empty-tpl" type="text/x-handlebars-template">
+      <p>Click on Load</p>
+    </script>
+```
+```javascript
+      //View definition. Will be used to create each list item view.
+      //a tagName = 'li' is set
+      var RepoView = Tree.BaseView.extend({
+        name: 'RepoView',
+
+        tagName: 'li',
+
+        template: '#repository-tpl',
+
+        events: {
+          'click a': 'onRepositoryAnchorClick'
+        },
+
+        onRepositoryAnchorClick: function(e) {
+          e.preventDefault();
+          this.$el.css('font-weight', 'bold');
+        }
+      });
+
+      //Instance of ListView.
+      //tagName is not defined, because the view element will be
+      //set by the ContainerView instance
+      var repoListView = new Tree.ListView({
+        itemView: RepoView,
+        model: new StarredRepositoriesCollection(),
+        loadingTemplate: '#spinner-tpl',
+        emptyTemplate: '#empty-tpl',
+        action: 'noOp'
+      });
+
+      var MainView = Tree.ContainerView.extend({
+        name: 'MainView',
+
+        template: '#layout-tpl',
+
+        events: {
+          'click button': 'onButtonClick'
+        },
+
+        onButtonClick: function(e) {
+          repoListView.load({
+            reset: true
+          });
+        }
+      });
+
+      var mainView = new MainView({
+        el: '.main-wrapper'
+      });
+
+      //.repositories is a <ul> DOM element
+      mainView.addView('.repositories', repoListView);
+      mainView.render();
 ```
 ##License
 Tree is licensed under the [MIT] (https://github.com/eabait/tree/blob/master/LICENSE)

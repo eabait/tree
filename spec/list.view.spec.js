@@ -29,6 +29,8 @@ describe('ListView', function() {
   ];
 
   var itemView = Tree.BaseView.extend({
+    tagName: 'li',
+
     template: '#item',
 
     compileTemplate: function(template) {
@@ -41,6 +43,7 @@ describe('ListView', function() {
   });
 
   var testCollection = new Backbone.Collection();
+  testCollection.url = 'test';
 
   beforeEach(function() {
     jasmine.getFixtures().fixturesPath = 'spec/templates/';
@@ -70,11 +73,21 @@ describe('ListView', function() {
 
   describe('Render subviews', function() {
 
+    beforeEach(function() {
+      response = {
+        status: 200,
+        contentType: 'application/json',
+        responseText: JSON.stringify(modelsJSON)
+      };
+    });
+
     it('should render a collection when the collection gets loaded', function() {
       spyOn(view1, 'onAddedModel');
       spyOn(view1, 'onRemovedModel');
 
-      testCollection.reset(modelsJSON);
+      view1.load();
+      request = jasmine.Ajax.requests.mostRecent();
+      request.response(response);
 
       expect(view1.onAddedModel).not.toHaveBeenCalled();
       expect(view1.onRemovedModel).not.toHaveBeenCalled();
@@ -84,6 +97,7 @@ describe('ListView', function() {
 
     it('should add a subview when a model is added', function() {
       var testCollection2 = new Backbone.Collection();
+      testCollection2.url = 'test';
       var view2 = new Tree.ListView({
         model: testCollection2,
         itemView: itemView
@@ -114,11 +128,16 @@ describe('ListView', function() {
 
     it('should remove a subview when a model is removed', function() {
       var testCollection2 = new Backbone.Collection();
+      testCollection2.url = 'test';
       var view2 = new Tree.ListView({
         model: testCollection2,
         itemView: itemView
       });
-      testCollection2.reset(modelsJSON);
+
+      view1.load();
+      request = jasmine.Ajax.requests.mostRecent();
+      request.response(response);
+
       spyOn(view2, 'onAddedModel');
       spyOn(view2, 'onRemovedModel');
 
@@ -135,26 +154,19 @@ describe('ListView', function() {
 
   describe('Dispose subviews', function() {
 
-    it('should be able to render all of its subviews', function() {
-      expect(view1.at(0)).toBeNull();
-
-      testCollection.reset(modelsJSON);
-
-      expect(view1.at(0)).not.toBeNull();
-    });
-
-  });
-
-  describe('Dispose subviews', function() {
-
-    it('should be able to render all of its subviews', function() {
+    it('should be able to dispose all of its subviews', function() {
       var testCollection2 = new Backbone.Collection();
+      testCollection2.url = 'test';
       var view2 = new Tree.ListView({
         model: testCollection2,
         itemView: itemView
       });
       var firstView, lastView;
-      testCollection2.reset(modelsJSON);
+
+      view1.load();
+      request = jasmine.Ajax.requests.mostRecent();
+      request.response(response);
+
       firstView = view2.at(0);
       lastView = view2.at(3);
 

@@ -56,10 +56,21 @@
       //BaseView's prototype including ContainerView
       _.extend(Tree.BaseView.prototype, HandlebarsMixin);
 
-      //Jokes view instance
       var RepoView = Tree.BaseView.extend({
         name: 'RepoView',
-        template: '#repository-tpl'
+
+        tagName: 'li',
+
+        template: '#repository-tpl',
+
+        events: {
+          'click a': 'onRepositoryAnchorClick'
+        },
+
+        onRepositoryAnchorClick: function(e) {
+          e.preventDefault();
+          this.$el.css('font-weight', 'bold');
+        }
       });
 
       var repoListView = new Tree.ListView({

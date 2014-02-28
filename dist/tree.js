@@ -81,7 +81,7 @@ Tree.BaseView = function(a, b) {
             return this;
         },
         renderEmptyView: function() {
-            this.createDomElements(this.getTemplate(this.emptyTpl)());
+            this.createDomElements(this.getTemplate(this.emptyTemplate)());
             return this;
         },
         dispose: function() {
@@ -147,7 +147,6 @@ Tree.ListView = function(a, b) {
     "use strict";
     return a.extend({
         modelToViewMap: {},
-        listItemWrapper: "li",
         itemView: null,
         bindOn: "reset",
         initialize: function() {
@@ -156,8 +155,6 @@ Tree.ListView = function(a, b) {
                 throw new Error("Tree error. View " + this.getId() + " requires an " + "itemView to be passed to the constructor in the config object");
             }
             this.itemView = this.options.itemView;
-            this.listItemWrapper = this.options.listItemWrapper || this.listItemWrapper;
-            this.listenTo(this.model, "reset", this.render);
             this.listenTo(this.model, "add", this.onAddedModel);
             this.listenTo(this.model, "remove", this.onRemovedModel);
         },
@@ -166,28 +163,22 @@ Tree.ListView = function(a, b) {
             return c.length ? c[a] : null;
         },
         render: function() {
-            var a = "";
-            this.model.each(b.bind(function(b, c) {
-                var d = new this.itemView({
-                    model: b
+            this.$el.empty();
+            this.model.each(b.bind(function(a, b) {
+                var c = new this.itemView({
+                    model: a
                 });
-                a += this.makeItemViewElements(d);
-                this.modelToViewMap[b.id] = d;
+                this.$el.append(c.render().$el);
+                this.modelToViewMap[a.id] = c;
             }, this));
-            this.createDomElements(a);
             return this;
-        },
-        makeItemViewElements: function(a) {
-            return "<" + this.listItemWrapper + ">" + a.getElementsToRender() + "</" + this.listItemWrapper + ">";
         },
         onAddedModel: function(a) {
             var b = new this.itemView({
                 model: a
             });
-            var c = "";
-            c += this.makeItemViewElements(b);
             this.modelToViewMap[a.id] = b;
-            this.$el.append(c);
+            this.$el.append(b.render().$el);
         },
         onRemovedModel: function(a) {
             var b = this.modelToViewMap[a.id];

@@ -229,7 +229,7 @@ Tree.BaseView = (function (_, Backbone) {
      * @return {object} return this
      */
     renderEmptyView: function() {
-      this.createDomElements(this.getTemplate(this.emptyTpl)());
+      this.createDomElements(this.getTemplate(this.emptyTemplate)());
       return this;
     },
 
