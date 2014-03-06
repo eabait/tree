@@ -73,13 +73,7 @@ Tree.BaseView = (function (_, Backbone) {
 
       this.compiledTemplates = {};
 
-      _.bindAll(this, 'beforeRender', 'render', 'afterRender');
-      this.render = _.wrap(this.render, function(render) {
-        this.beforeRender();
-        render();
-        this.afterRender();
-        return this;
-      });
+      //_.bindAll(this, 'beforeRender', 'render', 'afterRender');
     },
 
     /**
@@ -163,7 +157,9 @@ Tree.BaseView = (function (_, Backbone) {
      * @return {[type]} [description]
      */
     render: function() {
+      this.beforeRender();
       this.createDomElements(this.getElementsToRender());
+      this.afterRender();
       return this;
     },
 
@@ -193,6 +189,8 @@ Tree.BaseView = (function (_, Backbone) {
         throw new Error('Tree error. View ' + this.getId() +
           ' requires a bindOn property to be set');
       }
+
+      this.model.off(this.bindOn, this.render);
       this.listenTo(this.model, this.bindOn, this.render);
 
       if (this.loadingTemplate) {

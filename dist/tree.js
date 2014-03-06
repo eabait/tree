@@ -11,8 +11,8 @@ Tree.BaseView = function(a, b) {
         action: "render",
         name: null,
         jst: null,
-        initialize: function(b) {
-            this.options = b || {};
+        initialize: function(a) {
+            this.options = a || {};
             this.template = this.options.template || this.template;
             this.loadingTemplate = this.options.loadingTemplate || this.loadingTemplate;
             this.action = this.options.action || this.action;
@@ -21,13 +21,6 @@ Tree.BaseView = function(a, b) {
             this.jst = this.options.jst || this.jst;
             this.emptyTemplate = this.options.emptyTemplate || this.emptyTemplate;
             this.compiledTemplates = {};
-            a.bindAll(this, "beforeRender", "render", "afterRender");
-            this.render = a.wrap(this.render, function(a) {
-                this.beforeRender();
-                a();
-                this.afterRender();
-                return this;
-            });
         },
         getId: function() {
             return this.name || this.cid;
@@ -55,7 +48,9 @@ Tree.BaseView = function(a, b) {
             this.$el.html(a);
         },
         render: function() {
+            this.beforeRender();
             this.createDomElements(this.getElementsToRender());
+            this.afterRender();
             return this;
         },
         beforeRender: function() {},
@@ -64,6 +59,7 @@ Tree.BaseView = function(a, b) {
             if (!this.bindOn) {
                 throw new Error("Tree error. View " + this.getId() + " requires a bindOn property to be set");
             }
+            this.model.off(this.bindOn, this.render);
             this.listenTo(this.model, this.bindOn, this.render);
             if (this.loadingTemplate) {
                 this.renderLoadingView();
@@ -121,10 +117,10 @@ Tree.ContainerView = function(a) {
                 throw new Error("Tree error. There is no view mapped to region " + a);
             }
         },
-        render: function() {
-            a.prototype.render.apply(this, arguments);
-            for (var b in this.regions) {
-                this.showView(b);
+        createDomElements: function(b) {
+            a.prototype.createDomElements.apply(this, arguments);
+            for (var c in this.regions) {
+                this.showView(c);
             }
             return this;
         },
@@ -155,6 +151,7 @@ Tree.ListView = function(a, b) {
                 throw new Error("Tree error. View " + this.getId() + " requires an " + "itemView to be passed to the constructor in the config object");
             }
             this.itemView = this.options.itemView;
+            this.listenTo(this.model, "reset", this.render);
             this.listenTo(this.model, "add", this.onAddedModel);
             this.listenTo(this.model, "remove", this.onRemovedModel);
         },
@@ -163,6 +160,7 @@ Tree.ListView = function(a, b) {
             return c.length ? c[a] : null;
         },
         render: function() {
+            this.beforeRender();
             this.$el.empty();
             this.model.each(b.bind(function(a, b) {
                 var c = new this.itemView({
@@ -171,6 +169,7 @@ Tree.ListView = function(a, b) {
                 this.$el.append(c.render().$el);
                 this.modelToViewMap[a.id] = c;
             }, this));
+            this.afterRender();
             return this;
         },
         onAddedModel: function(a) {

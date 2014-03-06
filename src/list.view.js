@@ -22,7 +22,7 @@ Tree.ListView = (function(BaseView, _) {
 
       this.itemView = this.options.itemView;
 
-      // this.listenTo(this.model, 'reset', this.render);
+      this.listenTo(this.model, 'reset', this.render);
       this.listenTo(this.model, 'add', this.onAddedModel);
       this.listenTo(this.model, 'remove', this.onRemovedModel);
     },
@@ -43,6 +43,7 @@ Tree.ListView = (function(BaseView, _) {
      * a <i>reset</i> event
      */
     render: function() {
+      this.beforeRender();
       this.$el.empty();
 
       this.model.each(_.bind(function(model, index) {
@@ -57,6 +58,7 @@ Tree.ListView = (function(BaseView, _) {
 
       }, this));
 
+      this.afterRender();
       return this;
     },
 

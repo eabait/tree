@@ -69,25 +69,24 @@ describe('ListView', function() {
       expect(view1.$el).not.toBeNull();
     });
 
+    it('should throw an exception when ItemView function is not passed', function() {
+      var testExceptionThrowing = function() {
+        new Tree.ListView({
+          model: testCollection
+        });
+      }
+      expect(testExceptionThrowing).toThrow();
+    });
+
   });
 
   describe('Render subviews', function() {
 
-    beforeEach(function() {
-      response = {
-        status: 200,
-        contentType: 'application/json',
-        responseText: JSON.stringify(modelsJSON)
-      };
-    });
-
-    it('should render a collection when the collection gets loaded', function() {
+    it('should render a collection when the collection is reseted', function() {
       spyOn(view1, 'onAddedModel');
       spyOn(view1, 'onRemovedModel');
 
-      view1.load();
-      request = jasmine.Ajax.requests.mostRecent();
-      request.response(response);
+      testCollection.reset(modelsJSON);
 
       expect(view1.onAddedModel).not.toHaveBeenCalled();
       expect(view1.onRemovedModel).not.toHaveBeenCalled();
@@ -102,8 +101,8 @@ describe('ListView', function() {
         model: testCollection2,
         itemView: itemView
       });
-      spyOn(view2, 'onAddedModel');
-      spyOn(view2, 'onRemovedModel');
+      spyOn(view2, 'onAddedModel').and.callThrough();
+      spyOn(view2, 'onRemovedModel').and.callThrough();
 
       testCollection2.add(new Backbone.Model({
         id: 4,
@@ -119,9 +118,9 @@ describe('ListView', function() {
         hit: 'Smells Like Teen Spirit'
       }));
 
-      //expect(view2.onAddedModel).toHaveBeenCalled();
-      //expect(view2.onAddedModel.calls.count()).toEqual(2);
-      //expect(view2.onRemovedModel).not.toHaveBeenCalled();
+      // expect(view2.onAddedModel).toHaveBeenCalled();
+      // expect(view2.onAddedModel.calls.count()).toEqual(2);
+      // expect(view2.onRemovedModel).not.toHaveBeenCalled();
 
       view2.dispose();
     });
@@ -134,20 +133,27 @@ describe('ListView', function() {
         itemView: itemView
       });
 
-      view1.load();
-      request = jasmine.Ajax.requests.mostRecent();
-      request.response(response);
-
       spyOn(view2, 'onAddedModel');
       spyOn(view2, 'onRemovedModel');
 
+      testCollection2.reset(modelsJSON);
       testCollection2.shift();
 
-      //expect(view2.onAddedModel).toHaveBeenCalled();
-      //expect(view2.onAddedModel.calls.count()).toEqual(2);
-      //expect(view2.onRemovedModel).toHaveBeenCalled();
+      // expect(view2.onAddedModel).not.toHaveBeenCalled();
+      // expect(view2.onRemovedModel.calls.count()).toEqual(2);
+      // expect(view2.onRemovedModel).toHaveBeenCalled();
 
       view2.dispose();
+    });
+
+    it('should throw an error if the view to remove doesn\'t exists', function() {
+      testCollection.reset(modelsJSON);
+
+      function testRemoveThrowException() {
+        view1.onRemovedModel(100);
+      }
+
+      expect(testRemoveThrowException).toThrow();
     });
 
   });
@@ -163,9 +169,7 @@ describe('ListView', function() {
       });
       var firstView, lastView;
 
-      view1.load();
-      request = jasmine.Ajax.requests.mostRecent();
-      request.response(response);
+      testCollection2.reset(modelsJSON);
 
       firstView = view2.at(0);
       lastView = view2.at(3);
