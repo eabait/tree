@@ -54,8 +54,8 @@ Tree.ContainerView = (function (BaseView) {
      * 1) If () Renders a template to create the DOM elements that will serve as regions
      * 2) Renders subviews into their own region as defined in this.regions
      */
-    render: function() {
-      BaseView.prototype.render.apply(this, arguments);
+    createDomElements: function(elements) {
+      BaseView.prototype.createDomElements.apply(this, arguments);
 
       for (var view in this.regions) {
         this.showView(view);

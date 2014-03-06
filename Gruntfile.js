@@ -31,6 +31,23 @@ module.exports = function(grunt) {
           helpers: [
             'vendor/jasmine-jquery/jasmine-jquery.js',
             'vendor/jasmine-ajax/mock-ajax.js'
+          ]
+        }
+      },
+      coverage: {
+        src: Path.LIB,
+        options: {
+          vendor: [
+            'vendor/jquery/jquery-1.9.0.js',
+            'vendor/underscore/lodash.js',
+            'vendor/backbone/backbone.js',
+            'vendor/handlebars/handlebars.js'
+          ],
+          specs: Path.SPECS,
+          keepRunner: true,
+          helpers: [
+            'vendor/jasmine-jquery/jasmine-jquery.js',
+            'vendor/jasmine-ajax/mock-ajax.js'
           ],
           template: require('grunt-template-jasmine-istanbul'),
           templateOptions: {
@@ -77,5 +94,5 @@ module.exports = function(grunt) {
   // Dev task
   grunt.registerTask('test', ['jshint:all', 'jasmine:pivotal']);
   // Build tasks
-  grunt.registerTask('build', ['jshint:all', 'jasmine:pivotal', 'uglify:min', 'uglify:concat']);
+  grunt.registerTask('build', ['jshint:all', 'jasmine:coverage', 'uglify:min', 'uglify:concat']);
 };
