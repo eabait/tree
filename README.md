@@ -1,4 +1,4 @@
-Tree [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/eabait/tree/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+Tree
 ====
 Tree is a small library that extends Backbone.js with new types of views.
 
